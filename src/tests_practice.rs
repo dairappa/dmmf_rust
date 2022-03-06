@@ -13,6 +13,8 @@ fn 構造体の定義と分解() {
 
     assert_eq!(print_first, "Alex");
     assert_eq!(print_last, "Adams");
+
+
 }
 
 #[test]
