@@ -1,16 +1,50 @@
 fn main() {}
 
 mod ordertracking_domain {
-    struct WidgetCode(String);
+
+    use regex::Regex;
+    pub struct WidgetCode(String);
+    #[derive(Debug)]
+    pub enum WidgetError {
+        CreationError,
+    }
+    impl WidgetCode {
+        pub fn create(code: &str) -> Result<WidgetCode, WidgetError> {
+            let re = Regex::new(r"^W\d{4}").unwrap();
+            if !re.is_match(code){
+                return Err(WidgetError::CreationError);
+            }
+
+            Ok(WidgetCode(String::from(code)))
+        }
+
+        pub fn value(&self) -> String{
+            self.0.clone()
+        }
+    }
     struct GizmoCode(String);
     enum ProductCode{
         Widget(WidgetCode),
         Gizmo(GizmoCode)
     }
 
+    pub enum QuantityError {
+        CreationError
+    }
     struct KilogramQuantity(f32);
 
-    struct UnitQuantity(i32);
+    pub struct UnitQuantity(i32);
+    impl UnitQuantity {
+        pub fn create(quantity: i32) -> Result<UnitQuantity, QuantityError>{
+            if quantity < 1 {
+                return Err(QuantityError::CreationError);
+            } else if quantity > 1000 {
+                return Err(QuantityError::CreationError);
+            } else {
+                return Ok(UnitQuantity(quantity));
+            }
+        }
+    }
 
     enum OrderQuantity {
         KilogramQuantity(KilogramQuantity),
@@ -78,7 +112,20 @@ mod ordertracking_domain {
 
 #[cfg(test)]
 mod tests_modeling {
+    use crate::ordertracking_domain::{WidgetCode, UnitQuantity};
 
+    #[test]
+    fn valid_widgetcode() {
+        let x = WidgetCode::create("W1234");
+        
+        assert!(x.is_ok());
+    }
+    #[test]
+    fn valid_unitQuantity() {
+        let x = UnitQuantity::create(1);
+        
+        assert!(x.is_ok());
+    }
 }
 
 mod practice;
