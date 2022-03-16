@@ -3,6 +3,7 @@ fn main() {}
 mod ordertracking_domain {
 
     use regex::Regex;
+    use uom::si::mass::kilogram;
     pub struct WidgetCode(String);
     #[derive(Debug)]
     pub enum WidgetError {
@@ -31,7 +32,7 @@ mod ordertracking_domain {
     pub enum QuantityError {
         CreationError
     }
-    struct KilogramQuantity(f32);
+    struct KilogramQuantity(kilogram);
 
     pub struct UnitQuantity(i32);
     impl UnitQuantity {
@@ -113,6 +114,9 @@ mod ordertracking_domain {
 #[cfg(test)]
 mod tests_modeling {
     use crate::ordertracking_domain::{WidgetCode, UnitQuantity};
+    use uom::si::mass::kilogram;
+    use uom::si::f32::*;
+
 
     #[test]
     fn valid_widgetcode() {
@@ -125,6 +129,12 @@ mod tests_modeling {
         let x = UnitQuantity::create(1);
         
         assert!(x.is_ok());
+    }
+
+    #[test]
+    fn valid_kilogramQuantity() {
+        let x = Mass::new::<kilogram>(10.0);
+        
     }
 }
 
